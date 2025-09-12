@@ -3,7 +3,7 @@ package main
 import (
 	"sync"
 
-	"github.com/nice-pink/nicelog/log"
+	"github.com/nice-pink/NiceLog/log"
 )
 
 type Test struct {

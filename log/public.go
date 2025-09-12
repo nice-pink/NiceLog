@@ -3,7 +3,7 @@ package log
 import (
 	"sync"
 
-	"github.com/nice-pink/nicelog/log/config"
+	"github.com/nice-pink/NiceLog/log/config"
 )
 
 // And just go global.

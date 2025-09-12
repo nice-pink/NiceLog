@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nice-pink/nicelog/log/config"
+	"github.com/nice-pink/NiceLog/log/config"
 )
 
 func (l *logger) verbose(logs ...any) {

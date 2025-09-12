@@ -4,7 +4,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/nice-pink/nicelog/log"
+	"github.com/nice-pink/NiceLog/log"
 )
 
 // func main() {
