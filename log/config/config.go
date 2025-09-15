@@ -8,6 +8,14 @@ type ConnectionConfig struct {
 	Timeout  time.Duration
 }
 
+func GetConnectionConfig(address string, protocol string, timeout time.Duration) ConnectionConfig {
+	return ConnectionConfig{
+		Address:  address,
+		Protocol: ConnProtocol(protocol),
+		Timeout:  timeout,
+	}
+}
+
 type Config struct {
 	// std
 	Prefix   string

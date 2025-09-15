@@ -2,14 +2,10 @@ package log
 
 import (
 	"sync"
+	"time"
 
 	"github.com/nice-pink/NiceLog/log/config"
 )
-
-// export
-
-type ConnectionConfig config.ConnectionConfig
-type ConnProtocol config.ConnProtocol
 
 // And just go global.
 var defaultLogger *logger
@@ -109,10 +105,17 @@ func SetCommonData(commonData map[string]any) {
 
 // connect to remote log sink
 
-func Connect(cfg ConnectionConfig) {
+type Connection struct {
+	Address  string
+	Protocol string
+	Timeout  time.Duration
+}
+
+func Connect(cfg Connection) {
 	defaultLogger.mu.Lock()
 	defer defaultLogger.mu.Unlock()
-	defaultLogger.connect(config.ConnectionConfig(cfg))
+	connectionConfig := config.GetConnectionConfig(cfg.Address, cfg.Protocol, cfg.Timeout)
+	defaultLogger.connect(connectionConfig)
 }
 
 /*** log ***/

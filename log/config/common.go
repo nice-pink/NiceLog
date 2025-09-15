@@ -48,11 +48,11 @@ func GetLogLevel(level string) LogLevel {
 
 // connection protocol
 
-type ConnProtocol int
+type ConnProtocol string
 
 const (
-	Tcp ConnProtocol = iota
-	Udp
+	Tcp ConnProtocol = "tcp"
+	Udp ConnProtocol = "udp"
 )
 
 func GetNetwork(protocol ConnProtocol) string {
