@@ -192,10 +192,24 @@ func CriticalD(data map[string]interface{}, logs ...any) {
 	defaultLogger.criticalD(data, logs...)
 }
 
+// special
+
 func LogString(logs ...any) {
 	defaultLogger.mu.Lock()
 	defer defaultLogger.mu.Unlock()
 	defaultLogger.logString(logs...)
+}
+
+func Success(logs ...any) {
+	defaultLogger.mu.Lock()
+	defer defaultLogger.mu.Unlock()
+	defaultLogger.success(logs...)
+}
+
+func SuccessD(data map[string]interface{}, logs ...any) {
+	defaultLogger.mu.Lock()
+	defer defaultLogger.mu.Unlock()
+	defaultLogger.successD(data, logs...)
 }
 
 // std

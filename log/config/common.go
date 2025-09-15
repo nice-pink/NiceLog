@@ -28,22 +28,60 @@ const (
 )
 
 func GetLogLevel(level string) LogLevel {
-	if strings.ToLower(level) == "critical" {
+	if strings.EqualFold(level, "critical") {
 		return LLCritical
 	}
-	if strings.ToLower(level) == "error" {
+	if strings.EqualFold(level, "error") {
 		return LLError
 	}
-	if strings.ToLower(level) == "warn" || strings.ToLower(level) == "warning" {
+	if strings.EqualFold(level, "warn") || strings.EqualFold(level, "warning") {
 		return LLWarn
 	}
-	if strings.ToLower(level) == "info" {
+	if strings.EqualFold(level, "info") {
 		return LLInfo
 	}
-	if strings.ToLower(level) == "debug" {
+	if strings.EqualFold(level, "debug") {
 		return LLDebug
 	}
 	return LLVerbose
+}
+
+func GetLogLevelPrefix(level LogLevel) string {
+	if level == LLCritical {
+		return "CRITICAL"
+	}
+	if level == LLError {
+		return "ERROR"
+	}
+	if level == LLWarn {
+		return "WARN"
+	}
+	if level == LLInfo {
+		return "INFO"
+	}
+	if level == LLDebug {
+		return "DEBUG"
+	}
+	return "VERBOSE"
+}
+
+func GetLogLevelColor(level LogLevel) string {
+	if level == LLCritical {
+		return Red
+	}
+	if level == LLError {
+		return Red
+	}
+	if level == LLWarn {
+		return Yellow
+	}
+	if level == LLInfo {
+		return White
+	}
+	if level == LLDebug {
+		return White
+	}
+	return Reset
 }
 
 // connection protocol

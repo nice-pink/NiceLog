@@ -18,16 +18,28 @@ func (l *logger) verbose(logs ...any) {
 	}
 	msg := getMsg(logs...)
 
-	l.printLog(true, "VERBOSE", logs...)
+	prefix := config.GetLogLevelPrefix(config.LLVerbose)
+	l.printLog(
+		true,
+		prefix,
+		config.GetLogLevelColor(config.LLVerbose),
+		logs...,
+	)
 	l.sendJsonWithSeverity(msg, nil, "VERBOSE")
 }
 
-func (l *logger) verboseD(data map[string]interface{}, logs ...any) {
+func (l *logger) verboseD(data map[string]any, logs ...any) {
 	if l.cfg.LogLevel > config.LLVerbose {
 		return
 	}
 	msg := getMsg(logs...)
-	l.printLog(true, "VERBOSE", logs...)
+	level := config.GetLogLevelPrefix(config.LLVerbose)
+	l.printLog(
+		true,
+		level,
+		config.GetLogLevelColor(config.LLVerbose),
+		logs...,
+	)
 	l.sendJsonWithSeverity(msg, data, "VERBOSE")
 }
 
@@ -37,16 +49,28 @@ func (l *logger) debug(logs ...any) {
 	}
 
 	msg := getMsg(logs...)
-	l.printLog(true, "DEBUG", logs...)
+	prefix := config.GetLogLevelPrefix(config.LLDebug)
+	l.printLog(
+		true,
+		prefix,
+		config.GetLogLevelColor(config.LLDebug),
+		logs...,
+	)
 	l.sendJsonWithSeverity(msg, nil, "DEBUG")
 }
 
-func (l *logger) debugD(data map[string]interface{}, logs ...any) {
+func (l *logger) debugD(data map[string]any, logs ...any) {
 	if l.cfg.LogLevel > config.LLDebug {
 		return
 	}
 	msg := getMsg(logs...)
-	l.printLog(true, "DEBUG", logs...)
+	prefix := config.GetLogLevelPrefix(config.LLDebug)
+	l.printLog(
+		true,
+		prefix,
+		config.GetLogLevelColor(config.LLDebug),
+		logs...,
+	)
 	l.sendJsonWithSeverity(msg, data, "DEBUG")
 }
 
@@ -55,16 +79,28 @@ func (l *logger) info(logs ...any) {
 		return
 	}
 	msg := getMsg(logs...)
-	l.printLog(true, "INFO", logs...)
-	l.sendJsonWithSeverity(msg, nil, "INFO")
+	prefix := config.GetLogLevelPrefix(config.LLInfo)
+	l.printLog(
+		true,
+		prefix,
+		config.GetLogLevelColor(config.LLInfo),
+		logs...,
+	)
+	l.sendJsonWithSeverity(msg, nil, prefix)
 }
 
-func (l *logger) infoD(data map[string]interface{}, logs ...any) {
+func (l *logger) infoD(data map[string]any, logs ...any) {
 	if l.cfg.LogLevel > config.LLInfo {
 		return
 	}
 	msg := getMsg(logs...)
-	l.printLog(true, "INFO", logs...)
+	prefix := config.GetLogLevelPrefix(config.LLInfo)
+	l.printLog(
+		true,
+		prefix,
+		config.GetLogLevelColor(config.LLInfo),
+		logs...,
+	)
 	l.sendJsonWithSeverity(msg, data, "INFO")
 }
 
@@ -72,71 +108,128 @@ func (l *logger) warn(logs ...any) {
 	if l.cfg.LogLevel > config.LLWarn {
 		return
 	}
+	prefix := config.GetLogLevelPrefix(config.LLWarn)
 	msg := getMsg(logs...)
-	l.printLog(true, "WARN", logs...)
+	l.printLog(
+		true,
+		prefix,
+		config.GetLogLevelColor(config.LLWarn),
+		logs...,
+	)
 	l.sendJsonWithSeverity(msg, nil, "WARN")
 }
 
-func (l *logger) warnD(data map[string]interface{}, logs ...any) {
+func (l *logger) warnD(data map[string]any, logs ...any) {
 	if l.cfg.LogLevel > config.LLWarn {
 		return
 	}
+	prefix := config.GetLogLevelPrefix(config.LLWarn)
 	msg := getMsg(logs...)
-	l.printLog(true, "WARN", logs...)
-	l.sendJsonWithSeverity(msg, data, "WARN")
+	l.printLog(
+		true,
+		prefix,
+		config.GetLogLevelColor(config.LLWarn),
+		logs...,
+	)
+	l.sendJsonWithSeverity(msg, data, prefix)
 }
 
 func (l *logger) error(logs ...any) {
 	if l.cfg.LogLevel > config.LLError {
 		return
 	}
+	prefix := config.GetLogLevelPrefix(config.LLError)
 	msg := getMsg(logs...)
-	l.printLog(true, "ERROR", logs...)
-	l.sendJsonWithSeverity(msg, nil, "ERROR")
+	l.printLog(
+		true,
+		prefix,
+		config.GetLogLevelColor(config.LLError),
+		logs...,
+	)
+	l.sendJsonWithSeverity(msg, nil, prefix)
 }
 
-func (l *logger) errorD(data map[string]interface{}, logs ...any) {
+func (l *logger) errorD(data map[string]any, logs ...any) {
 	if l.cfg.LogLevel > config.LLError {
 		return
 	}
+	prefix := config.GetLogLevelPrefix(config.LLError)
 	msg := getMsg(logs...)
-	l.printLog(true, "ERROR", logs...)
-	l.sendJsonWithSeverity(msg, data, "ERROR")
+	l.printLog(
+		true,
+		prefix,
+		config.GetLogLevelColor(config.LLError),
+		logs...,
+	)
+	l.sendJsonWithSeverity(msg, data, prefix)
 }
 
 func (l *logger) critical(logs ...any) {
 	if l.cfg.LogLevel > config.LLCritical {
 		return
 	}
+	prefix := config.GetLogLevelPrefix(config.LLCritical)
 	msg := getMsg(logs...)
-	l.printLog(true, "CRITICAL", logs...)
-	l.sendJsonWithSeverity(msg, nil, "CRITICAL")
+	l.printLog(
+		true,
+		prefix,
+		config.GetLogLevelColor(config.LLCritical),
+		logs...,
+	)
+	l.sendJsonWithSeverity(msg, nil, prefix)
 }
 
-func (l *logger) criticalD(data map[string]interface{}, logs ...any) {
+func (l *logger) criticalD(data map[string]any, logs ...any) {
 	if l.cfg.LogLevel > config.LLCritical {
 		return
 	}
+	prefix := config.GetLogLevelPrefix(config.LLCritical)
 	msg := getMsg(logs...)
-	l.printLog(true, "CRITICAL", logs...)
-	l.sendJsonWithSeverity(msg, data, "CRITICAL")
+	l.printLog(
+		true,
+		prefix,
+		config.GetLogLevelColor(config.LLCritical),
+		logs...,
+	)
+	l.sendJsonWithSeverity(msg, data, prefix)
+}
+
+func (l *logger) success(logs ...any) {
+
+	if l.cfg.LogLevel > config.LLInfo {
+		return
+	}
+	level := config.GetLogLevelPrefix(config.LLInfo)
+	msg := getMsg(logs...)
+	l.printLog(true, level, config.Green, logs...)
+	l.sendJsonWithSeverity(msg, nil, "SUCCESS")
+}
+
+func (l *logger) successD(data map[string]any, logs ...any) {
+	if l.cfg.LogLevel > config.LLInfo {
+		return
+	}
+	level := config.GetLogLevelPrefix(config.LLInfo)
+	msg := getMsg(logs...)
+	l.printLog(true, level, config.Green, logs...)
+	l.sendJsonWithSeverity(msg, data, "SUCCESS")
 }
 
 func (l *logger) logString(logs ...any) {
 	msg := getMsg(logs...)
 	l.sendString(msg)
-	l.printLog(true, "STRING", logs...)
+	l.printLog(true, "STRING", config.Reset, logs...)
 }
 
 func (l *logger) print(logs ...any) {
 	msg := getMsg(logs...)
-	l.printLog(false, "", logs...)
+	l.printLog(false, "", config.Reset, logs...)
 	l.sendJsonWithSeverity(msg, nil, "")
 }
 
 func (l *logger) println(logs ...any) {
 	msg := getMsg(logs...)
-	l.printLog(true, "", logs...)
+	l.printLog(true, "", config.Reset, logs...)
 	l.sendJsonWithSeverity(msg, nil, "")
 }
 
@@ -159,7 +252,7 @@ func (l *logger) connect(cfg config.ConnectionConfig) net.Conn {
 	return conn
 }
 
-func (l *logger) sendJsonWithSeverity(msg string, add map[string]interface{}, severity string) {
+func (l *logger) sendJsonWithSeverity(msg string, add map[string]any, severity string) {
 	if l.cfg.Connection.Address == "" {
 		if os.Getenv("GU_REMOTE_LOG_DEBUG") == "true" {
 			fmt.Println("No address for remote logging.")
@@ -168,7 +261,7 @@ func (l *logger) sendJsonWithSeverity(msg string, add map[string]interface{}, se
 	}
 
 	// create map
-	data := map[string]interface{}{}
+	data := map[string]any{}
 	data[l.cfg.Keys.Message] = msg
 
 	// add severity
@@ -190,7 +283,7 @@ func (l *logger) sendJsonWithSeverity(msg string, add map[string]interface{}, se
 	go l.sendJson(data)
 }
 
-func (l *logger) sendJson(data map[string]interface{}) bool {
+func (l *logger) sendJson(data map[string]any) bool {
 	if l.cfg.Connection.Address == "" {
 		if os.Getenv("GU_REMOTE_LOG_DEBUG") == "true" {
 			fmt.Println("No address for remote logging.")
@@ -253,7 +346,7 @@ func getMsg(logs ...any) string {
 	return strings.TrimSuffix(msg, "\n")
 }
 
-func (l *logger) printLog(newline bool, level string, logs ...any) {
+func (l *logger) printLog(newline bool, level, color string, logs ...any) {
 	// add prefix
 	if l.cfg.Prefix != "" {
 		logs = append([]any{l.cfg.Prefix}, logs...)
@@ -261,7 +354,7 @@ func (l *logger) printLog(newline bool, level string, logs ...any) {
 
 	// add level
 	if level != "" {
-		logs = append([]any{level + ":"}, logs...)
+		logs = append([]any{color + level + ":" + config.Reset}, logs...)
 	}
 
 	if l.cfg.LogTimestamp {
