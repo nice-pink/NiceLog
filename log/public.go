@@ -9,6 +9,7 @@ import (
 // export
 
 type ConnectionConfig config.ConnectionConfig
+type ConnProtocol config.ConnProtocol
 
 // And just go global.
 var defaultLogger *logger
