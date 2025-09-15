@@ -6,6 +6,10 @@ import (
 	"github.com/nice-pink/NiceLog/log/config"
 )
 
+// export
+
+type ConnectionConfig config.ConnectionConfig
+
 // And just go global.
 var defaultLogger *logger
 
@@ -18,6 +22,8 @@ func newLogger() *logger {
 	return &logger{
 		mu:  sync.Mutex{},
 		cfg: config.DefaultConfig(),
+type CommonData map[string]any
+
 	}
 }
 
@@ -104,7 +110,7 @@ func SetCommonData(commonData map[string]any) {
 
 // connect to remote log sink
 
-func Connect(cfg config.ConnectionConfig) {
+func Connect(cfg ConnectionConfig) {
 	defaultLogger.mu.Lock()
 	defer defaultLogger.mu.Unlock()
 	defaultLogger.connect(cfg)
