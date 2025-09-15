@@ -22,8 +22,6 @@ func newLogger() *logger {
 	return &logger{
 		mu:  sync.Mutex{},
 		cfg: config.DefaultConfig(),
-type CommonData map[string]any
-
 	}
 }
 
@@ -113,7 +111,7 @@ func SetCommonData(commonData map[string]any) {
 func Connect(cfg ConnectionConfig) {
 	defaultLogger.mu.Lock()
 	defer defaultLogger.mu.Unlock()
-	defaultLogger.connect(cfg)
+	defaultLogger.connect(config.ConnectionConfig(cfg))
 }
 
 /*** log ***/
