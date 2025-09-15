@@ -86,17 +86,23 @@ func SetIsUtc(isUtc bool) {
 	defaultLogger.cfg.IsUtc = isUtc
 }
 
+// keys
+
 func SetKeys(keys config.Keys) {
 	defaultLogger.mu.Lock()
 	defer defaultLogger.mu.Unlock()
 	defaultLogger.cfg.Keys = keys
 }
 
+// common data
+
 func SetCommonData(commonData map[string]any) {
 	defaultLogger.mu.Lock()
 	defer defaultLogger.mu.Unlock()
 	defaultLogger.cfg.CommonData = commonData
 }
+
+// connect to remote log sink
 
 func Connect(cfg config.ConnectionConfig) {
 	defaultLogger.mu.Lock()
