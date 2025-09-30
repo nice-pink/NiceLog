@@ -352,13 +352,14 @@ func (l *logger) printLog(newline bool, level, color string, logs ...any) {
 		logs = append([]any{l.cfg.Prefix}, logs...)
 	}
 
+	// add timestamp
+	if l.cfg.LogTimestamp {
+		logs = append([]any{l.getFormattedTimestamp()}, logs...)
+	}
+
 	// add level
 	if level != "" {
 		logs = append([]any{color + level + ":" + config.Reset}, logs...)
-	}
-
-	if l.cfg.LogTimestamp {
-		logs = append([]any{l.getFormattedTimestamp()}, logs...)
 	}
 
 	// add timestamp
