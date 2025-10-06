@@ -305,6 +305,7 @@ func (l *logger) sendNdJson(data map[string]any) bool {
 	if err != nil {
 		return false
 	}
+	payload = append(payload, '\n')
 	return l.sendJsonViaHttp(payload)
 }
 
