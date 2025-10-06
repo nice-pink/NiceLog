@@ -11,6 +11,9 @@ type ConnectionConfig struct {
 }
 
 func GetConnectionConfig(address, protocol, streamName, contentType string, timeout time.Duration) ConnectionConfig {
+	if streamName == "" {
+		streamName = "stream"
+	}
 	return ConnectionConfig{
 		Address:     address,
 		Protocol:    ConnProtocol(protocol),
