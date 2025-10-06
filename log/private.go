@@ -289,7 +289,7 @@ func (l *logger) sendJsonWithSeverity(msg string, add map[string]any, severity s
 }
 
 func (l *logger) sendNdJson(data map[string]any) bool {
-	if !l.checkRemoteSetupSanity(false) {
+	if !l.checkRemoteSetupSanity() {
 		return false
 	}
 
@@ -298,19 +298,19 @@ func (l *logger) sendNdJson(data map[string]any) bool {
 		"log":    data,
 		"stream": l.cfg.Connection.StreamName,
 	}
-	l.cfg.Connection.Address += "?_stream_fields=stream&_time_field=date&_msg_field=log." + l.cfg.Keys.Message
-
+	address := l.cfg.Connection.Address + "?_stream_fields=stream&_time_field=date&_msg_field=log." + l.cfg.Keys.Message
+	fmt.Println("sendNdJson", address)
 	payload, err := json.Marshal(baseData)
 	if err != nil {
 		return false
 	}
 	payload = append(payload, '\n')
 
-	return l.sendJsonViaHttp(payload)
+	return l.sendJsonViaHttp(address, payload)
 }
 
 func (l *logger) sendJson(data map[string]any) bool {
-	if !l.checkRemoteSetupSanity(false) {
+	if !l.checkRemoteSetupSanity() {
 		return false
 	}
 
@@ -325,7 +325,7 @@ func (l *logger) sendJson(data map[string]any) bool {
 
 	// send via http or socket
 	if l.cfg.Connection.Protocol == "http" {
-		return l.sendJsonViaHttp(payload)
+		return l.sendJsonViaHttp(l.cfg.Connection.Address, payload)
 	}
 	return l.sendJsonViaSocket(payload)
 }
@@ -348,8 +348,8 @@ func (l *logger) sendJsonViaSocket(payload []byte) bool {
 	return true
 }
 
-func (l *logger) sendJsonViaHttp(payload []byte) bool {
-	req, err := http.NewRequest(http.MethodPost, l.cfg.Connection.Address, bytes.NewBuffer(payload))
+func (l *logger) sendJsonViaHttp(address string, payload []byte) bool {
+	req, err := http.NewRequest(http.MethodPost, address, bytes.NewBuffer(payload))
 	if err != nil {
 		return false
 	}
@@ -427,7 +427,7 @@ func (l *logger) getFormattedTimestamp() string {
 	return ts.Format(l.cfg.TimeFormat)
 }
 
-func (l *logger) checkRemoteSetupSanity(queryNeeded bool) bool {
+func (l *logger) checkRemoteSetupSanity() bool {
 	// check address
 	if l.cfg.Connection.Address == "" {
 		if os.Getenv("GU_REMOTE_LOG_DEBUG") == "true" {
