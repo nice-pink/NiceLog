@@ -1,6 +1,7 @@
 package log
 
 import (
+	"net/http"
 	"sync"
 	"time"
 
@@ -11,8 +12,9 @@ import (
 var defaultLogger *logger
 
 type logger struct {
-	mu  sync.Mutex
-	cfg *config.Config
+	mu         sync.Mutex
+	cfg        *config.Config
+	httpClient *http.Client
 }
 
 func newLogger() *logger {
@@ -33,6 +35,30 @@ func SetPrefix(prefix string) {
 	defaultLogger.mu.Lock()
 	defer defaultLogger.mu.Unlock()
 	defaultLogger.cfg.Prefix = prefix
+}
+
+// content type
+func SetContentType(contentType string) {
+	defaultLogger.mu.Lock()
+	defer defaultLogger.mu.Unlock()
+	defaultLogger.cfg.ContentType = contentType
+}
+
+// query params
+func SetQueryParams(queryParams string) {
+	defaultLogger.mu.Lock()
+	defer defaultLogger.mu.Unlock()
+	defaultLogger.cfg.QueryParams = queryParams
+}
+
+// is http
+func SetIsHttpPost(isHttpPost bool) {
+	defaultLogger.mu.Lock()
+	defer defaultLogger.mu.Unlock()
+	defaultLogger.cfg.IsHttpPost = isHttpPost
+	defaultLogger.httpClient = &http.Client{
+		Timeout: 1 * time.Second,
+	}
 }
 
 // log level
@@ -106,15 +132,18 @@ func SetCommonData(commonData map[string]any) {
 // connect to remote log sink
 
 type Connection struct {
-	Address  string
-	Protocol string
-	Timeout  time.Duration
+	Address     string
+	Protocol    string
+	ContentType string
+	QueryParams string
+	Timeout     time.Duration
+	IsHttp      bool
 }
 
 func Connect(cfg Connection) {
 	defaultLogger.mu.Lock()
 	defer defaultLogger.mu.Unlock()
-	connectionConfig := config.GetConnectionConfig(cfg.Address, cfg.Protocol, cfg.Timeout)
+	connectionConfig := config.GetConnectionConfig(cfg.Address, cfg.Protocol, cfg.ContentType, cfg.QueryParams, cfg.Timeout, cfg.IsHttp)
 	defaultLogger.connect(connectionConfig)
 }
 

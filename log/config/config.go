@@ -3,16 +3,22 @@ package config
 import "time"
 
 type ConnectionConfig struct {
-	Address  string
-	Protocol ConnProtocol
-	Timeout  time.Duration
+	Address     string
+	Protocol    ConnProtocol
+	Timeout     time.Duration
+	ContentType string
+	QueryParams string
+	IsHttpPost  bool
 }
 
-func GetConnectionConfig(address string, protocol string, timeout time.Duration) ConnectionConfig {
+func GetConnectionConfig(address, protocol, contentType, queryParams string, timeout time.Duration, isHttpPost bool) ConnectionConfig {
 	return ConnectionConfig{
-		Address:  address,
-		Protocol: ConnProtocol(protocol),
-		Timeout:  timeout,
+		Address:     address,
+		Protocol:    ConnProtocol(protocol),
+		Timeout:     timeout,
+		ContentType: contentType,
+		QueryParams: queryParams,
+		IsHttpPost:  isHttpPost,
 	}
 }
 
@@ -20,6 +26,10 @@ type Config struct {
 	// std
 	Prefix   string
 	LogLevel LogLevel
+	// http
+	IsHttpPost  bool
+	ContentType string
+	QueryParams string
 	// timestamp
 	LogTimestamp bool
 	TimeFormat   string

@@ -1,10 +1,12 @@
 package log
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"maps"
 	"net"
+	"net/http"
 	"os"
 	"strings"
 	"time"
@@ -291,15 +293,6 @@ func (l *logger) sendJson(data map[string]any) bool {
 		return false
 	}
 
-	conn := l.connect(l.cfg.Connection)
-	if conn == nil {
-		if os.Getenv("GU_REMOTE_LOG_DEBUG") == "true" {
-			fmt.Println("No connection for remote logging.")
-		}
-		return false
-	}
-	defer conn.Close()
-
 	payload, err := json.Marshal(data)
 	if err != nil {
 		print("ERROR", l.cfg.Prefix, "cannot marshal data", data, err.Error())
@@ -310,11 +303,48 @@ func (l *logger) sendJson(data map[string]any) bool {
 		fmt.Println(string(payload))
 	}
 
-	_, err = conn.Write(payload)
+	// send via http or socket
+	if l.cfg.Connection.IsHttpPost {
+		return l.sendJsonViaHttp(payload)
+	}
+	return l.sendJsonViaSocket(payload)
+}
+
+func (l *logger) sendJsonViaSocket(payload []byte) bool {
+	conn := l.connect(l.cfg.Connection)
+	if conn == nil {
+		if os.Getenv("GU_REMOTE_LOG_DEBUG") == "true" {
+			fmt.Println("No connection for remote logging.")
+		}
+		return false
+	}
+	defer conn.Close()
+
+	_, err := conn.Write(payload)
 	if err != nil {
 		print("ERROR", l.cfg.Prefix, "cannot write payload", err.Error())
 		return false
 	}
+	return true
+}
+
+func (l *logger) sendJsonViaHttp(payload []byte) bool {
+	addr := l.cfg.Connection.Address
+	if l.cfg.Connection.QueryParams != "" {
+		addr += "?" + l.cfg.Connection.QueryParams
+	}
+	req, err := http.NewRequest(http.MethodPost, addr, bytes.NewBuffer(payload))
+	if err != nil {
+		return false
+	}
+	if l.cfg.Connection.ContentType != "" {
+		req.Header.Set("Content-Type", l.cfg.Connection.ContentType)
+	}
+	resp, err := l.httpClient.Do(req)
+	if err != nil {
+		return false
+	}
+	defer resp.Body.Close()
 	return true
 }
 
