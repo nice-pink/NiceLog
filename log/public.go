@@ -144,7 +144,14 @@ func Connect(cfg Connection) {
 	defaultLogger.mu.Lock()
 	defer defaultLogger.mu.Unlock()
 	connectionConfig := config.GetConnectionConfig(cfg.Address, cfg.Protocol, cfg.ContentType, cfg.QueryParams, cfg.Timeout, cfg.IsHttp)
-	defaultLogger.connect(connectionConfig)
+	if cfg.Protocol == "http" {
+		connectionConfig.IsHttpPost = true
+		defaultLogger.httpClient = &http.Client{
+			Timeout: 1 * time.Second,
+		}
+	} else {
+		defaultLogger.connect(connectionConfig)
+	}
 }
 
 /*** log ***/
