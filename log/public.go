@@ -37,30 +37,6 @@ func SetPrefix(prefix string) {
 	defaultLogger.cfg.Prefix = prefix
 }
 
-// content type
-func SetContentType(contentType string) {
-	defaultLogger.mu.Lock()
-	defer defaultLogger.mu.Unlock()
-	defaultLogger.cfg.ContentType = contentType
-}
-
-// query params
-func SetQueryParams(queryParams string) {
-	defaultLogger.mu.Lock()
-	defer defaultLogger.mu.Unlock()
-	defaultLogger.cfg.QueryParams = queryParams
-}
-
-// is http
-func SetIsHttpPost(isHttpPost bool) {
-	defaultLogger.mu.Lock()
-	defer defaultLogger.mu.Unlock()
-	defaultLogger.cfg.IsHttpPost = isHttpPost
-	defaultLogger.httpClient = &http.Client{
-		Timeout: 1 * time.Second,
-	}
-}
-
 // log level
 
 func SetLogLevelDebug() {
@@ -134,24 +110,25 @@ func SetCommonData(commonData map[string]any) {
 type Connection struct {
 	Address     string
 	Protocol    string
-	ContentType string
-	QueryParams string
 	Timeout     time.Duration
-	IsHttp      bool
+	ContentType string
 }
 
 func Connect(cfg Connection) {
 	defaultLogger.mu.Lock()
 	defer defaultLogger.mu.Unlock()
-	connectionConfig := config.GetConnectionConfig(cfg.Address, cfg.Protocol, cfg.ContentType, cfg.QueryParams, cfg.Timeout, cfg.IsHttp)
-	if cfg.Protocol == "http" {
-		connectionConfig.IsHttpPost = true
+	connectionConfig := config.GetConnectionConfig(cfg.Address, cfg.Protocol, cfg.ContentType, cfg.Timeout)
+	if shouldInitHttpClient(cfg) {
 		defaultLogger.httpClient = &http.Client{
 			Timeout: 1 * time.Second,
 		}
 	} else {
 		defaultLogger.connect(connectionConfig)
 	}
+}
+
+func shouldInitHttpClient(cfg Connection) bool {
+	return cfg.Protocol == "http" || cfg.Protocol == "ndjson"
 }
 
 /*** log ***/

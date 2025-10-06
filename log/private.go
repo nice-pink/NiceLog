@@ -282,20 +282,39 @@ func (l *logger) sendJsonWithSeverity(msg string, add map[string]any, severity s
 		maps.Copy(data, l.cfg.CommonData)
 	}
 
-	go l.sendJson(data)
+	if l.cfg.Connection.Protocol == "ndjson" {
+		go l.sendNdJson(data)
+	} else {
+		go l.sendJson(data)
+	}
+}
+
+func (l *logger) sendNdJson(data map[string]any) bool {
+	if !l.checkRemoteSetupSanity(false) {
+		return false
+	}
+
+	baseData := map[string]any{
+		"date":   l.getFormattedTimestamp(),
+		"log":    data,
+		"stream": l.cfg.StreamName,
+	}
+	l.cfg.Connection.Address += "?_stream_fields=stream&_time_field=date&_msg_field=log." + l.cfg.Keys.Message
+
+	payload, err := json.Marshal(baseData)
+	if err != nil {
+		return false
+	}
+	return l.sendJsonViaHttp(payload)
 }
 
 func (l *logger) sendJson(data map[string]any) bool {
-	if l.cfg.Connection.Address == "" {
-		if os.Getenv("GU_REMOTE_LOG_DEBUG") == "true" {
-			fmt.Println("No address for remote logging.")
-		}
+	if !l.checkRemoteSetupSanity(false) {
 		return false
 	}
 
 	payload, err := json.Marshal(data)
 	if err != nil {
-		print("ERROR", l.cfg.Prefix, "cannot marshal data", data, err.Error())
 		return false
 	}
 
@@ -304,7 +323,7 @@ func (l *logger) sendJson(data map[string]any) bool {
 	}
 
 	// send via http or socket
-	if l.cfg.Connection.IsHttpPost {
+	if l.cfg.Connection.Protocol == "http" {
 		return l.sendJsonViaHttp(payload)
 	}
 	return l.sendJsonViaSocket(payload)
@@ -329,11 +348,7 @@ func (l *logger) sendJsonViaSocket(payload []byte) bool {
 }
 
 func (l *logger) sendJsonViaHttp(payload []byte) bool {
-	addr := l.cfg.Connection.Address
-	if l.cfg.Connection.QueryParams != "" {
-		addr += "?" + l.cfg.Connection.QueryParams
-	}
-	req, err := http.NewRequest(http.MethodPost, addr, bytes.NewBuffer(payload))
+	req, err := http.NewRequest(http.MethodPost, l.cfg.Connection.Address, bytes.NewBuffer(payload))
 	if err != nil {
 		return false
 	}
@@ -409,4 +424,15 @@ func (l *logger) getFormattedTimestamp() string {
 		ts = time.Now()
 	}
 	return ts.Format(l.cfg.TimeFormat)
+}
+
+func (l *logger) checkRemoteSetupSanity(queryNeeded bool) bool {
+	// check address
+	if l.cfg.Connection.Address == "" {
+		if os.Getenv("GU_REMOTE_LOG_DEBUG") == "true" {
+			fmt.Println("No address for remote logging.")
+		}
+		return false
+	}
+	return true
 }

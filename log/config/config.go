@@ -7,29 +7,24 @@ type ConnectionConfig struct {
 	Protocol    ConnProtocol
 	Timeout     time.Duration
 	ContentType string
-	QueryParams string
-	IsHttpPost  bool
 }
 
-func GetConnectionConfig(address, protocol, contentType, queryParams string, timeout time.Duration, isHttpPost bool) ConnectionConfig {
+func GetConnectionConfig(address, protocol, contentType string, timeout time.Duration) ConnectionConfig {
 	return ConnectionConfig{
 		Address:     address,
 		Protocol:    ConnProtocol(protocol),
 		Timeout:     timeout,
 		ContentType: contentType,
-		QueryParams: queryParams,
-		IsHttpPost:  isHttpPost,
 	}
 }
 
 type Config struct {
 	// std
-	Prefix   string
-	LogLevel LogLevel
+	Prefix     string
+	LogLevel   LogLevel
+	StreamName string
 	// http
-	IsHttpPost  bool
 	ContentType string
-	QueryParams string
 	// timestamp
 	LogTimestamp bool
 	TimeFormat   string
