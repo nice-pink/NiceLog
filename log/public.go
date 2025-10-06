@@ -110,6 +110,7 @@ func SetCommonData(commonData map[string]any) {
 type Connection struct {
 	Address     string
 	Protocol    string
+	StreamName  string
 	Timeout     time.Duration
 	ContentType string
 }
@@ -117,8 +118,9 @@ type Connection struct {
 func Connect(cfg Connection) {
 	defaultLogger.mu.Lock()
 	defer defaultLogger.mu.Unlock()
-	connectionConfig := config.GetConnectionConfig(cfg.Address, cfg.Protocol, cfg.ContentType, cfg.Timeout)
+	connectionConfig := config.GetConnectionConfig(cfg.Address, cfg.Protocol, cfg.StreamName, cfg.ContentType, cfg.Timeout)
 	if shouldInitHttpClient(cfg) {
+		defaultLogger.cfg.Connection = connectionConfig
 		defaultLogger.httpClient = &http.Client{
 			Timeout: 1 * time.Second,
 		}

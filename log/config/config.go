@@ -7,22 +7,23 @@ type ConnectionConfig struct {
 	Protocol    ConnProtocol
 	Timeout     time.Duration
 	ContentType string
+	StreamName  string
 }
 
-func GetConnectionConfig(address, protocol, contentType string, timeout time.Duration) ConnectionConfig {
+func GetConnectionConfig(address, protocol, streamName, contentType string, timeout time.Duration) ConnectionConfig {
 	return ConnectionConfig{
 		Address:     address,
 		Protocol:    ConnProtocol(protocol),
 		Timeout:     timeout,
 		ContentType: contentType,
+		StreamName:  streamName,
 	}
 }
 
 type Config struct {
 	// std
-	Prefix     string
-	LogLevel   LogLevel
-	StreamName string
+	Prefix   string
+	LogLevel LogLevel
 	// http
 	ContentType string
 	// timestamp

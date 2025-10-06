@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"sync"
 	"time"
 
@@ -15,6 +16,8 @@ import (
 // }
 
 func main() {
+	// TestNdJson()
+
 	log.Print("print log")
 	log.Println("println log")
 
@@ -49,4 +52,19 @@ func main() {
 	}
 	wg.Wait()
 
+}
+
+func TestNdJson() {
+	var wg sync.WaitGroup
+	wg.Add(1)
+	func() {
+		fmt.Println("TestNdJson")
+		log.Connect(log.Connection{
+			Address:    "http://localhost:9428/insert/jsonline",
+			Protocol:   "ndjson",
+			StreamName: "test",
+		})
+		log.Info("info log")
+	}()
+	wg.Wait()
 }

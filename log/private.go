@@ -197,7 +197,6 @@ func (l *logger) criticalD(data map[string]any, logs ...any) {
 }
 
 func (l *logger) success(logs ...any) {
-
 	if l.cfg.LogLevel > config.LLInfo {
 		return
 	}
@@ -295,9 +294,9 @@ func (l *logger) sendNdJson(data map[string]any) bool {
 	}
 
 	baseData := map[string]any{
-		"date":   l.getFormattedTimestamp(),
+		"date":   time.Now().UTC().Format(time.RFC3339),
 		"log":    data,
-		"stream": l.cfg.StreamName,
+		"stream": l.cfg.Connection.StreamName,
 	}
 	l.cfg.Connection.Address += "?_stream_fields=stream&_time_field=date&_msg_field=log." + l.cfg.Keys.Message
 
@@ -306,6 +305,7 @@ func (l *logger) sendNdJson(data map[string]any) bool {
 		return false
 	}
 	payload = append(payload, '\n')
+
 	return l.sendJsonViaHttp(payload)
 }
 
