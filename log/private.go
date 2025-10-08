@@ -299,7 +299,6 @@ func (l *logger) sendNdJson(data map[string]any) bool {
 		"stream": l.cfg.Connection.StreamName,
 	}
 	address := l.cfg.Connection.Address + "?_stream_fields=stream&_time_field=date&_msg_field=log." + l.cfg.Keys.Message
-	fmt.Println("sendNdJson", address)
 	payload, err := json.Marshal(baseData)
 	if err != nil {
 		return false
