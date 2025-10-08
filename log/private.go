@@ -294,7 +294,7 @@ func (l *logger) sendNdJson(data map[string]any) bool {
 	}
 
 	baseData := map[string]any{
-		"date":   time.Now().UTC().Format(time.RFC3339),
+		"date":   time.Now().UTC().Format(time.RFC3339Nano),
 		"log":    data,
 		"stream": l.cfg.Connection.StreamName,
 	}
