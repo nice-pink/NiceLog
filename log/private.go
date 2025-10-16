@@ -295,10 +295,10 @@ func (l *logger) sendNdJson(data map[string]any) bool {
 
 	baseData := map[string]any{
 		"date":   time.Now().UTC().Format(time.RFC3339Nano),
-		"log":    data,
+		"event":  data,
 		"stream": l.cfg.Connection.StreamName,
 	}
-	address := l.cfg.Connection.Address + "?_stream_fields=stream&_time_field=date&_msg_field=log." + l.cfg.Keys.Message
+	address := l.cfg.Connection.Address + "?_stream_fields=stream&_time_field=date&_msg_field=event." + l.cfg.Keys.Message
 	payload, err := json.Marshal(baseData)
 	if err != nil {
 		return false
