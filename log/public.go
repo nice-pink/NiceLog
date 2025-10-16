@@ -141,7 +141,7 @@ func Verbose(logs ...any) {
 	defaultLogger.verbose(logs...)
 }
 
-func VerboseD(data map[string]interface{}, logs ...any) {
+func VerboseD(data map[string]any, logs ...any) {
 	defaultLogger.mu.Lock()
 	defer defaultLogger.mu.Unlock()
 	defaultLogger.verboseD(data, logs...)
@@ -153,7 +153,7 @@ func Debug(logs ...any) {
 	defaultLogger.debug(logs...)
 }
 
-func DebugD(data map[string]interface{}, logs ...any) {
+func DebugD(data map[string]any, logs ...any) {
 	defaultLogger.mu.Lock()
 	defer defaultLogger.mu.Unlock()
 	defaultLogger.debugD(data, logs...)
@@ -165,7 +165,7 @@ func Info(logs ...any) {
 	defaultLogger.info(logs...)
 }
 
-func InfoD(data map[string]interface{}, logs ...any) {
+func InfoD(data map[string]any, logs ...any) {
 	defaultLogger.mu.Lock()
 	defer defaultLogger.mu.Unlock()
 	defaultLogger.infoD(data, logs...)
@@ -177,7 +177,7 @@ func Warn(logs ...any) {
 	defaultLogger.warn(logs...)
 }
 
-func WarnD(data map[string]interface{}, logs ...any) {
+func WarnD(data map[string]any, logs ...any) {
 	defaultLogger.mu.Lock()
 	defer defaultLogger.mu.Unlock()
 	defaultLogger.warnD(data, logs...)
@@ -189,7 +189,7 @@ func Error(logs ...any) {
 	defaultLogger.error(logs...)
 }
 
-func ErrorD(data map[string]interface{}, logs ...any) {
+func ErrorD(data map[string]any, logs ...any) {
 	defaultLogger.mu.Lock()
 	defer defaultLogger.mu.Unlock()
 	defaultLogger.errorD(data, logs...)
@@ -201,7 +201,7 @@ func Critical(logs ...any) {
 	defaultLogger.critical(logs...)
 }
 
-func CriticalD(data map[string]interface{}, logs ...any) {
+func CriticalD(data map[string]any, logs ...any) {
 	defaultLogger.mu.Lock()
 	defer defaultLogger.mu.Unlock()
 	defaultLogger.criticalD(data, logs...)
@@ -221,7 +221,7 @@ func Success(logs ...any) {
 	defaultLogger.success(logs...)
 }
 
-func SuccessD(data map[string]interface{}, logs ...any) {
+func SuccessD(data map[string]any, logs ...any) {
 	defaultLogger.mu.Lock()
 	defer defaultLogger.mu.Unlock()
 	defaultLogger.successD(data, logs...)
